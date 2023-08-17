@@ -37,7 +37,7 @@ export class WebsocketGateway
     // console.log('handleDisconnect', this.server.sockets)
   }
   afterInit() {
-    // console.log('afterInit', this.server)
+    console.log('afterInit', this.server)
   }
 
   @SubscribeMessage('send-message')
