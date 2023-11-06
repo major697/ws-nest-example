@@ -11,7 +11,7 @@ import {
 import { WebsocketService } from './websocket.service'
 import { MessageDto } from './dto/message.dto'
 import { Socket, Server } from 'socket.io'
-import { CreateNotificationsDto } from '../notifications/dto/create-notifications.dto'
+import { CreateNotificationsDto } from './dto/create-notifications.dto'
 
 @WebSocketGateway(80, { namespace: 'ws', cors: { origin: '*' } })
 export class WebsocketGateway
@@ -54,12 +54,12 @@ export class WebsocketGateway
       createNotificationDto,
     )
 
-    const { socketID } = createNotificationDto
+    const { socketIds, text } = createNotificationDto
 
-    if (socketID) {
-      this.server.to(socketID).emit('receive-message', notification)
+    if (socketIds) {
+      this.server.to(socketIds).emit('receive-message', text)
     } else {
-      this.server.emit('receive-message', notification)
+      this.server.emit('receive-message', text)
     }
   }
 }
