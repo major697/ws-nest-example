@@ -45,9 +45,7 @@ export class WebsocketGateway
     @MessageBody() message: MessageDto,
     @ConnectedSocket() socket: Socket,
   ) {
-    this.server
-      // .to(socket.id)
-      .emit('receive-message', message)
+    this.server.to(socket.id).emit('receive-message', message)
   }
 
   @SubscribeMessage('send-notification')
@@ -55,8 +53,13 @@ export class WebsocketGateway
     const notification = this.websocketService.sendNotification(
       createNotificationDto,
     )
-    this.server
-      // .to(socket.id)
-      .emit('receive-message', notification)
+
+    const { socketID } = createNotificationDto
+
+    if (socketID) {
+      this.server.to(socketID).emit('receive-message', notification)
+    } else {
+      this.server.emit('receive-message', notification)
+    }
   }
 }
