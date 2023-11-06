@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
-import { CreateNotificationDto } from '../notification/dto/create-notification.dto'
+import { CreateNotificationsDto } from '../notifications/dto/create-notifications.dto'
 
 @Injectable()
 export class WebsocketService {
-  sendNotification(createNotificationDto: CreateNotificationDto) {
+  sendNotification(createNotificationDto: CreateNotificationsDto) {
     return createNotificationDto
   }
 }

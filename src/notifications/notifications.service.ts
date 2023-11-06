@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
-import { CreateNotificationDto } from './dto/create-notification.dto'
+import { CreateNotificationsDto } from './dto/create-notifications.dto'
 import { WebsocketGateway } from '../websocket/websocket.gateway'
 
 @Injectable()
-export class NotificationService {
+export class NotificationsService {
   constructor(private readonly websocketGateway: WebsocketGateway) {}
 
-  create(createNotificationDto: CreateNotificationDto) {
+  create(createNotificationDto: CreateNotificationsDto) {
     this.websocketGateway.sendNotification(createNotificationDto)
     return { message: 'Sent notification by WS' }
   }
