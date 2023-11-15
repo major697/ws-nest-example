@@ -1,4 +1,6 @@
+import { SOCKET_ID_TYPE } from '../services/enums/notifications.enum'
+
 export class CreateNotificationsDto {
-  text: string
-  socketIds: string
+  message: string
+  socketIds: SOCKET_ID_TYPE | string[]
 }

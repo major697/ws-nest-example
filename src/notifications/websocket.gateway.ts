@@ -14,6 +14,7 @@ import { Socket, Server } from 'socket.io'
 import { CreateNotificationsDto } from './dto/create-notifications.dto'
 import { NotificationsClientWebsocketInterface } from './interfaces/notifications.interface'
 import { Logger } from '@nestjs/common'
+import { SOCKET_ID_TYPE } from './services/enums/notifications.enum'
 
 @WebSocketGateway(80, { namespace: 'ws', cors: { origin: '*' } })
 export class WebsocketGateway
@@ -58,14 +59,15 @@ export class WebsocketGateway
       createNotificationDto,
     )
 
-    const { socketIds, text } = createNotificationDto
+    const { socketIds, message } = createNotificationDto
+    console.log(socketIds.length)
 
-    if (socketIds) {
-      this.server.to(socketIds).emit('receive-message', text)
-      this.logger.log(`Sent message to users with socket ID: ${socketIds}`)
-    } else {
-      this.server.emit('receive-message', text)
+    if (socketIds === SOCKET_ID_TYPE.ALL) {
+      this.server.emit('receive-message', message)
       this.logger.log('Sent message to all users')
+    } else {
+      this.server.to(socketIds).emit('receive-message', message)
+      this.logger.log(`Sent message to users with socket ID: ${socketIds}`)
     }
   }
 }

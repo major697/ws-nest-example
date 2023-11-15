@@ -8,6 +8,6 @@ export class NotificationsService {
 
   create(createNotificationDto: CreateNotificationsDto) {
     this.websocketGateway.sendNotification(createNotificationDto)
-    return { message: 'Sent notification by WS' }
+    return { message: 'Sent notification' }
   }
 }
