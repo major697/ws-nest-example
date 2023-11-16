@@ -3,11 +3,21 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { WebsocketModule } from './notifications/websocket.module'
 import { NotificationsModule } from './notifications/notifications.module'
-import { ConfigModule } from '@nestjs/config'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AuthModule } from './auth/auth.module'
+import { PrismaModule } from './prisma/prisma.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [WebsocketModule, NotificationsModule, ConfigModule.forRoot()],
+  imports: [
+    ConfigModule.forRoot(),
+    WebsocketModule,
+    NotificationsModule,
+    AuthModule,
+    PrismaModule,
+    UsersModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ConfigService],
 })
 export class AppModule {}
