@@ -4,7 +4,6 @@ import { HeadersWebsocketInterface } from './interfaces/websocket.interface'
 import { WsException } from '@nestjs/websockets'
 import { UsersService } from '../users/users.service'
 import { AuthService } from '../auth/auth.service'
-import { EMIT_ENUM } from '../services/enums/emit.enum'
 
 @Injectable()
 export class WebsocketService {
@@ -35,13 +34,6 @@ export class WebsocketService {
           email: verifiedUserEmail,
           client_id: clientId,
         })
-
-        socket
-          .to(clientId)
-          .emit(
-            EMIT_ENUM.CONNECTION_INIT,
-            `Connection to WS is correct. Your socket ID is: ${clientId}`,
-          )
 
         this.logger.log(`Client connected, his socket ID: ${clientId}`)
       } else {

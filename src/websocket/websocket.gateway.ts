@@ -12,7 +12,7 @@ import { Logger, UnauthorizedException } from '@nestjs/common'
 
 @WebSocketGateway(80, {
   namespace: 'ws',
-  cors: { origin: '*' },
+  cors: true,
 })
 export class WebsocketGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -38,19 +38,4 @@ export class WebsocketGateway
   afterInit() {
     this.websocketService.afterInit(this.server)
   }
-
-  // @UseGuards(AuthGuard)
-  // @SubscribeMessage('send-notification')
-  // sendNotification(createNotificationDto: SendNotificationWebsocketInterface) {
-  //   const { socketIds, message } = createNotificationDto
-  //   console.log(socketIds.length)
-  //
-  //   if (socketIds === SOCKET_ID_TYPE.ALL) {
-  //     this.server.emit('receive-message', message)
-  //     this.logger.log('Sent message to all users')
-  //   } else {
-  //     this.server.to(socketIds).emit('receive-message', message)
-  //     this.logger.log(`Sent message to users with socket ID: ${socketIds}`)
-  //   }
-  // }
 }

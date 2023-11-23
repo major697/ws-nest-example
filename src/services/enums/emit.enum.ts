@@ -6,5 +6,4 @@ export enum EMIT_ENUM {
   newListener = 'newListener',
   removeListener = 'removeListener',
   GET_NOTIFICATIONS = 'get-notifications',
-  CONNECTION_INIT = 'connection-init',
 }
