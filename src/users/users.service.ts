@@ -1,17 +1,17 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
-import { users } from '@prisma/client'
+import { Prisma, users } from '@prisma/client'
 
 @Injectable()
 export class UsersService {
   constructor(private prisma: PrismaService) {}
   private readonly logger = new Logger(UsersService.name)
 
-  async findOne(email: string) {
+  async findOne(email: string, findBy: keyof Prisma.usersCreateInput) {
     try {
-      return await this.prisma.users.findUnique({
-        where: { email },
+      return await this.prisma.users.findFirst({
+        where: { [findBy]: email },
       })
     } catch (e) {
       this.logger.error(`Can't find user with email: ${email}`)
@@ -32,24 +32,30 @@ export class UsersService {
     }
   }
 
-  async create(createUserDto: CreateUserDto) {
-    const { email, client_id } = createUserDto
+  async createOrUpdate(createUserDto: CreateUserDto) {
     try {
-      const user: users = await this.findOne(email)
+      const user: users = await this.findOne(createUserDto.email, 'email')
 
       if (user) {
         await this.update(createUserDto)
+        return 'User update successfully'
       } else {
-        await this.prisma.users.create({
-          data: {
-            email,
-            client_id,
-          },
-        })
+        await this.create(createUserDto)
+        return 'User created successfully'
       }
-      return 'User created successfully'
     } catch (e) {
       this.logger.error(`Can't add new user: ${e.message}`)
+      throw new BadRequestException(e)
+    }
+  }
+
+  async create(createUserDto: CreateUserDto) {
+    try {
+      await this.prisma.users.create({
+        data: createUserDto,
+      })
+    } catch (e) {
+      this.logger.error(`Can't create new user: ${e.message}`)
       throw new BadRequestException(e)
     }
   }
@@ -69,8 +75,20 @@ export class UsersService {
     }
   }
 
-  remove(id: number) {
-    //TODO usuwaj uzytkownika jesli zrobi disconnect z WS
-    return `This action removes a #${id} user`
+  async remove(clientId: string) {
+    try {
+      const user: users = await this.findOne(clientId, 'client_id')
+
+      if (user) {
+        await this.prisma.users.delete({
+          where: {
+            email: user.email,
+          },
+        })
+      }
+    } catch (e) {
+      this.logger.error(`Can't remove users with clientId: ${clientId}`)
+      throw new BadRequestException(e)
+    }
   }
 }

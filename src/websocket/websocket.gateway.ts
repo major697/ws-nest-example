@@ -32,9 +32,11 @@ export class WebsocketGateway
       return new WsException(new UnauthorizedException())
     }
   }
+
   handleDisconnect(socket: Socket) {
     this.websocketService.handleDisconnect(socket)
   }
+
   afterInit() {
     this.websocketService.afterInit(this.server)
   }

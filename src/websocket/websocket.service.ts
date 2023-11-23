@@ -30,7 +30,7 @@ export class WebsocketService {
 
       if (verifiedUserEmail) {
         this.connectedClients.set(clientId, socket)
-        await this.usersService.create({
+        await this.usersService.createOrUpdate({
           email: verifiedUserEmail,
           client_id: clientId,
         })
@@ -38,20 +38,28 @@ export class WebsocketService {
         this.logger.log(`Client connected, his socket ID: ${clientId}`)
       } else {
         this.logger.error(`Error connection, user is not valid: ${clientId}`)
-        this.handleDisconnect(socket)
+        await this.handleDisconnect(socket)
       }
     } catch (e) {
       this.logger.error(`Error in handle connection to WS: ${e}}`)
-      this.handleDisconnect(socket)
+      await this.handleDisconnect(socket)
       throw new Error(e)
     }
   }
-  handleDisconnect(socket: Socket) {
+
+  async handleDisconnect(socket: Socket) {
     const clientId = socket.id
-    this.connectedClients.delete(clientId)
-    socket.disconnect()
-    this.logger.log(`Client disconnect, his socket ID: ${clientId}`)
+    try {
+      this.connectedClients.delete(clientId)
+      socket.disconnect()
+      await this.usersService.remove(clientId)
+      this.logger.log(`Client disconnect, his socket ID: ${clientId}`)
+    } catch (e) {
+      this.logger.error(`Can't disconnect user: ${clientId}}`)
+      throw new Error(e)
+    }
   }
+
   afterInit(server: Server) {
     this.logger.log(`After init: ${server}`)
   }
