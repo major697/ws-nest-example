@@ -19,10 +19,12 @@ export class WebsocketService {
       const clientId = socket.id
       const headers: HeadersWebsocketInterface = socket.handshake.headers
 
-      if (!headers.token || !headers.context_id)
+      //TODO sprawdz czy headers.context_id jest potzrebny przy auth: if (!headers.token || !headers.context_id)
+      if (!headers.token) {
         return new WsException(
           'Empty credentials for websocket connection token or context_id',
         )
+      }
 
       const verifiedUserEmail = await this.authService.verifyAccessToken(
         headers.token,
