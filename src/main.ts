@@ -24,6 +24,7 @@ const app = async () => {
 
   return app
 }
+
 app()
   .then(async app => {
     logger.log(`Application is running: ${await app.getUrl()}`)

@@ -15,11 +15,11 @@ export class NotificationsWebsocket extends WebsocketGateway {
 
     if (users === SOCKET_ID_TYPE.ALL) {
       // TODO sprawdz odpowiedz od clienta w czasie: await this.server.timeout(2000).emitWithAck(...)
-      this.server.emit(EMIT_ENUM.GET_NOTIFICATIONS, message)
+      this.server.emit(EMIT_ENUM.GET_NOTIFICATION, message)
       this.logger.log('Sent message to all users')
     } else {
       for (const user of users) {
-        this.server.to(user.client_id).emit(EMIT_ENUM.GET_NOTIFICATIONS, {
+        this.server.to(user.client_id).emit(EMIT_ENUM.GET_NOTIFICATION, {
           message,
           context_id: user.context_id,
         })
